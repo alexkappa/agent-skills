@@ -34,4 +34,4 @@ Whether a name fits needs human judgment. Lint can ban specific words and enforc
 
 - JS/TS: ESLint `id-denylist` for exact names (`data`, `tmp`); `@typescript-eslint/naming-convention` with a `custom` regex and `match: false` to ban suffixes such as `(Manager|Helper)$`.
 - Python: Pylint `disallowed-name` with `bad-names` or `bad-names-rgxs`; Ruff `N` (pep8-naming) checks naming style, not meaning.
-- Go: `revive` `var-naming` covers casing and initialisms; no common rule bans words.
+- Go: `revive` `var-naming` covers casing and initialisms; `revive` `package-naming` (v1.15+) bans grab-bag package names (`utils`, `common`, `misc`; `check-extra-bad-name` adds `helpers`, `shared`; `user-defined-bad-names` for the repo's own list).
