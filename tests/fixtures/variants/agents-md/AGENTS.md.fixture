@@ -1,0 +1,11 @@
+# Billing app
+
+## Setup commands
+
+- Install: `npm install`
+- Build: `npm run build`
+- Lint: `npm run lint`
+
+## Conventions
+
+- Wrap every API resource in its own client class.

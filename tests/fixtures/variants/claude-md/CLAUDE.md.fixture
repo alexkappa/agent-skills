@@ -1,0 +1,4 @@
+# Billing app
+
+Build with `npm run build`; lint with `npm run lint`.
+Source lives in `src/`; the API layer is `src/api/`.
