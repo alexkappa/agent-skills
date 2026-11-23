@@ -39,4 +39,4 @@ Word lists are enforceable; whether a comment earns its place needs human judgme
 
 - JS/TS: ESLint `no-warning-comments` with custom `terms` (the repo's codenames, "spec", "plan") and `location: "anywhere"`.
 - Any language: a regex check in CI or a pre-commit hook with `language: pygrep`, scoped to source files and to the repo's own codenames and phrases to keep false positives low.
-- Ruff and golangci-lint have no general rule for comment wording; use the regex check.
+- Go: golangci-lint `godox` with custom `keywords` flags comments that start with one (a codename used as a label). Ruff has no rule for custom comment wording; use the regex check.

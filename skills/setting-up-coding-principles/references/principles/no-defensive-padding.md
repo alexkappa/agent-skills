@@ -33,6 +33,6 @@ Say where validation happens; code past that point trusts it.
 
 Partly enforceable, mostly through the type checker and type-aware lint rules:
 
-- JS/TS: `@typescript-eslint/no-unnecessary-condition` (needs `strictNullChecks`), `no-useless-catch`, `@typescript-eslint/no-unused-vars` for unused option parameters.
+- JS/TS: `@typescript-eslint/no-unnecessary-condition` (needs `strictNullChecks`), `no-useless-catch`, `@typescript-eslint/no-unused-vars` for parameters the body never reads.
 - Python: mypy `warn_unreachable`, or Pyright `reportUnnecessaryComparison` and `reportUnnecessaryIsInstance`; Ruff `S110` (try-except-pass), `BLE001` (blind except), `TRY203` (useless try-except), `ARG` (unused arguments).
 - Go: `govet` `nilness` (impossible nil checks), `unparam` (parameters unused or always given the same value), `nilerr` and `errcheck` (dropped errors).

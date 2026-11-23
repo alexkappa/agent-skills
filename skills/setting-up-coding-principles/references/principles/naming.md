@@ -33,5 +33,5 @@ Name the domain word to use, or the suffix to avoid and what to do instead of re
 Whether a name fits needs human judgment. Lint can ban specific words and enforce casing:
 
 - JS/TS: ESLint `id-denylist` for exact names (`data`, `tmp`); `@typescript-eslint/naming-convention` with a `custom` regex and `match: false` to ban suffixes such as `(Manager|Helper)$`.
-- Python: Pylint `disallowed-name` with `bad-names` or `bad-names-rgxs`; Ruff `N` (pep8-naming) covers casing only.
+- Python: Pylint `disallowed-name` with `bad-names` or `bad-names-rgxs`; Ruff `N` (pep8-naming) checks naming style, not meaning.
 - Go: `revive` `var-naming` covers casing and initialisms; no common rule bans words.

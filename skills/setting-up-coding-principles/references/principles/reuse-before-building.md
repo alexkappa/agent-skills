@@ -39,6 +39,6 @@ Record the order once, then one line per concrete decision.
 
 Choosing among the options needs human judgment. Lint can lock in a choice once it's made:
 
-- Ban a rejected library or a replaced helper: ESLint `no-restricted-imports`, Ruff `TID251`, Go `depguard` or `gomodguard`.
+- Ban a rejected library or a replaced helper: ESLint `no-restricted-imports`, Ruff `TID251`, Go `depguard`.
 - Prefer built-ins: `eslint-plugin-unicorn` rules such as `prefer-structured-clone`; Ruff `UP` (pyupgrade).
-- Unused dependencies: `knip` or `depcheck` (JS/TS), `deptry` (Python), `go mod tidy` with a clean-diff check in CI.
+- Unused dependencies: `knip` (JS/TS), `deptry` (Python), `go mod tidy -diff` in CI.

@@ -36,5 +36,5 @@ Needs human judgment: no linter can tell whether an interface hides anything. Li
 
 - JS/TS: ESLint `no-useless-constructor`, `@typescript-eslint/no-extraneous-class` (classes that are empty or hold only static members).
 - Python: Pylint `useless-parent-delegation` (methods that only call `super()` with the same arguments).
-- Go: golangci-lint `iface` with its `unused` and `opaque` analyzers (unused interfaces; functions that return an interface but only ever one concrete type).
+- Go: golangci-lint `iface` with its `unused` and `opaque` analyzers (interfaces unused in their own package; functions that return an interface but only ever one concrete type).
 - When the decision is about which layers may exist or call each other: import-linter `layers` contracts, ESLint `import/no-restricted-paths`, Go `depguard`.
