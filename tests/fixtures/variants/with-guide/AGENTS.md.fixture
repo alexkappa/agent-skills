@@ -4,21 +4,16 @@
 Examples, counter-examples, and the decisions behind these rules: `docs/coding-principles.md`.
 
 ### Rules
-- No plan, spec, or task references in comments: `no-warning-comments` in `eslint.config.js`.
-- New API code is plain exported functions in `src/api/` that call `request()` directly; don't add per-resource client classes like `InvoicesClient` that only forward to it. Example: `src/api/users.ts:9`.
-- Name API reads `list<Resources>()` and `get<Resource>(id)`; don't use `fetch*` or `retrieve*`. Example: `src/api/users.ts:9`.
-- No `*Manager` or `*Helper` type names: `@typescript-eslint/naming-convention` in `eslint.config.js`.
-- Validate at the edges: HTTP responses in `request()`, environment in `src/config.ts`, where missing required config fails at startup instead of defaulting. Past that, don't null-check what the types guarantee. Example: `src/lib/http.ts:9`.
-- No catch blocks that only rethrow: `no-useless-catch` in `eslint.config.js`.
-- Only `src/lib/http.ts` calls fetch: `no-restricted-globals` in `eslint.config.js`.
-- Read process.env only in `src/config.ts`: `no-restricted-properties` in `eslint.config.js`.
-- Don't import `src/legacy/fetch-helper.ts`: `no-restricted-imports` in `eslint.config.js`.
+- New API code is plain exported functions in `src/api/` that call `request()` directly; don't add per-resource client classes like `InvoicesClient` that only forward to it.
+- Name API reads `list<Resources>()` and `get<Resource>(id)`; don't use `fetch*` or `retrieve*`.
+- Validate at the edges: HTTP responses in `request()`, environment in `src/config.ts`, where missing required config fails at startup instead of defaulting. Past that, don't null-check what the types guarantee.
 
 ### Canonical modules
-- HTTP client: `src/lib/http.ts` (`request()`); don't add another.
-- Config and environment: `src/config.ts` (`config`); don't add another.
-- Errors: `src/lib/errors.ts` (`HttpError`); don't add another.
-- Money: `src/lib/money.ts` (`Money`, `parseMoney()`); don't add another.
+One owner each: use it, and don't add another.
+- HTTP client: `src/lib/http.ts` (`request()`).
+- Config and environment: `src/config.ts` (`config`).
+- Errors: `src/lib/errors.ts` (`HttpError`).
+- Money: `src/lib/money.ts` (`Money`, `parseMoney()`).
 
 ### When designing
 When designing a feature or writing a spec, use the `applying-coding-principles` skill. The spec must include its section under the exact heading "Coding principles applied". When planning, copy every line of that section verbatim into the plan's Global Constraints. If a spec lacks the section, run `applying-coding-principles` before planning.

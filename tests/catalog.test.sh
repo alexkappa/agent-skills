@@ -29,7 +29,7 @@ while IFS='|' read -r file name; do
   [ "$lines" -le 60 ] && pass "$file: at most 60 lines" || bad "$file: at most 60 lines (has $lines)"
 done <<'CATALOG'
 deep-modules.md|Deep modules
-one-source-of-truth.md|One source of truth per concept
+one-owner.md|One owner per piece of knowledge
 reuse-before-building.md|Reuse before building
 naming.md|Naming is a design signal
 consistency.md|Consistency with the repo

@@ -24,10 +24,10 @@ Compare siblings to find the pattern new code must match, and the places where t
 
 ## Writing the repo rule
 
-Point at the best existing instance and name the one or two traits that matter, instead of describing the pattern at length.
+Name the best existing instance by module and symbol, and the one or two traits that matter, instead of describing the pattern at length.
 
-- Shape: "New <kind of code> follows `<path:line>`: <trait>, <trait>."
-- Example: "New HTTP handlers follow `internal/api/orders.go:22`: decode, call one service function, encode; errors go through `writeError()`."
+- Shape: "New <kind of code> follows `<symbol>` in `<path>`: <trait>, <trait>."
+- Example: "New HTTP handlers follow `CreateOrder` in `internal/api/orders.go`: decode, call one service function, encode; errors go through `writeError()`."
 
 ## Lint enforcement
 

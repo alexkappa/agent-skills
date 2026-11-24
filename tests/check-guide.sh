@@ -24,8 +24,13 @@ fi
 lines=$(grep -c '' <<<"$block" || true)
 [ "$lines" -le 90 ] || fail "block is $lines lines, over the 90 limit"
 
+# The block's headings start at "#" or "##", following the file's own sections.
+top=$(grep -m1 -E '^#{1,2} Coding principles$' <<<"$block" | cut -d' ' -f1 || true)
+top=${top:-##}
+sub="$top#"
+
 previous=0
-for heading in '## Coding principles' '### Rules' '### Canonical modules' '### When designing' '### Severity'; do
+for heading in "$top Coding principles" "$sub Rules" "$sub Canonical modules" "$sub When designing" "$sub Severity"; do
   n=$(grep -nxF -m1 "$heading" <<<"$block" | cut -d: -f1 || true)
   if [ -z "$n" ]; then
     fail "missing heading: $heading"
@@ -35,11 +40,11 @@ for heading in '## Coding principles' '### Rules' '### Canonical modules' '### W
   fi
 done
 
-designing=$(sed -n '/^### When designing$/,/^### Severity$/p' <<<"$block")
-grep -qF 'applying-coding-principles' <<<"$designing" || fail "### When designing does not name applying-coding-principles"
-grep -qF 'Coding principles applied' <<<"$designing" || fail "### When designing does not name \"Coding principles applied\""
+designing=$(sed -n "/^$sub When designing\$/,/^$sub Severity\$/p" <<<"$block")
+grep -qF 'applying-coding-principles' <<<"$designing" || fail "When designing does not name applying-coding-principles"
+grep -qF 'Coding principles applied' <<<"$designing" || fail "When designing does not name \"Coding principles applied\""
 
-grep -qxF 'Breaking a rule in this guide is an Important finding.' <<<"$block" || fail "### Severity text is not exact"
+grep -qxF 'Breaking a rule in this guide is an Important finding.' <<<"$block" || fail "Severity text is not exact"
 
 if [ ! -f "$repo/$detail" ]; then
   fail "$detail is missing"
@@ -63,18 +68,13 @@ else
   [ -z "$undated" ] || fail "decision line lacks '— decided YYYY-MM-DD': $undated"
 fi
 
-# Cited paths: backticked tokens ending in a file extension (optionally :line) or in /
+# Cited paths: backticked tokens ending in a file extension or in /. Line numbers drift, so any :line fails.
 path_re='^[A-Za-z0-9_./@-]+\.[A-Za-z0-9]{1,5}(:[0-9]+)?$|^[A-Za-z0-9_./@-]+/$'
 while IFS= read -r token; do
   [[ $token =~ $path_re ]] || continue
   file=${token%%:*}
-  line=
-  [ "$file" = "$token" ] || line=${token#*:}
-  if [ ! -e "$repo/$file" ]; then
-    fail "cited path does not exist: $file"
-  elif [ -n "$line" ] && [ "$line" -gt "$(awk 'END { print NR }' "$repo/$file")" ]; then
-    fail "cited line past end of file: $token"
-  fi
+  [ "$file" = "$token" ] || fail "line number cited: $token"
+  [ -e "$repo/$file" ] || fail "cited path does not exist: $file"
 done < <({ echo "$block"; [ ! -f "$repo/$detail" ] || cat "$repo/$detail"; } | awk '/^[[:space:]]*```/ { skip = !skip; next } !skip' | { grep -o '`[^`]*`' || true; } | tr -d '`' | sort -u)
 
 if [ -f "$repo/CLAUDE.md" ] && ! grep -qE '^@AGENTS\.md[[:space:]]*$' "$repo/CLAUDE.md"; then

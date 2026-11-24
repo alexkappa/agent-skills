@@ -26,8 +26,8 @@ Code handles the cases that can happen and nothing else. Checks, fallbacks, try/
 
 Say where validation happens; code past that point trusts it.
 
-- Shape: "Validate <input> at <edge> (`<path>`); past that, don't re-check what the types guarantee. Example: `<path:line>`."
-- Example: "Parse request bodies with the schemas in `src/schemas/`; handlers don't null-check fields a schema requires, and missing config fails at startup. Example: `src/routes/orders.ts:31`."
+- Shape: "Validate <input> at <edge> (`<path>`); past that, don't re-check what the types guarantee."
+- Example: "Parse request bodies with the schemas in `src/schemas/`; handlers don't null-check fields a schema requires, and missing config fails at startup."
 
 ## Lint enforcement
 

@@ -25,8 +25,9 @@ Look in code and history for changes that were forced in:
 
 Say how preparatory refactors land and what they may touch.
 
-- Shape: "If a change doesn't fit, refactor first in a separate <commit or PR> with no behavior change, then make the change. <Scope limit, if any>. Example: `<path:line>`."
-- Example: "Refactor first, in its own `refactor:` commit, then add the feature; refactors anywhere in `src/` are in scope without asking. Example: `src/pricing/rules.ts:12`, a strategy map an earlier refactor made for this."
+- Shape: "If a change doesn't fit, refactor first in a separate <commit or PR> with no behavior change, then make the change. <Scope limit, if any>."
+- Example: "Refactor first, in its own `refactor:` commit, then add the feature; refactors anywhere in `src/` are in scope without asking."
+- The detail file's Follow example is a commit sequence, not code: one or two `refactor` subjects and the `feat` they made easy, in the repo's commit style.
 
 ## Lint enforcement
 

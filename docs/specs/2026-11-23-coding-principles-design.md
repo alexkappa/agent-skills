@@ -45,11 +45,18 @@ channel superpowers enforces strictly.
 ## Goals
 
 - Each repo gets a guide that reads as if written for that codebase:
-  every rule points at real code in the repo's own language.
-- The guide names the repo's canonical modules (one per concept), so a
-  diff-only reviewer can spot duplication from the guide alone.
+  every rule and example uses the repo's own names, modules and language.
+- The guide names the repo's canonical modules (one owner per piece of
+  knowledge), so a diff-only reviewer can spot duplication from the guide
+  alone.
 - A rule the repo's linter can enforce is enforced there, as a hard gate.
-  The guide only notes which lint rule enforces it.
+  The always-loaded section doesn't repeat it; the lint message points to
+  the detail file.
+- The guide is a good neighbour in `AGENTS.md`: it changes nothing outside
+  its markers, never repeats or contradicts what the file already says, and
+  matches the file's heading levels.
+- The guide doesn't rot as the code changes: it cites modules and symbols,
+  never line numbers.
 - Every pattern question ("is this a pattern to follow or one to avoid?")
   is settled with a human during setup or feature design, never during
   implementation.
@@ -126,10 +133,13 @@ The starting set:
 1. **Deep modules** (Ousterhout). Few abstractions, each hiding real
    complexity behind a small interface. No pass-through layers or thin
    wrappers that only rename.
-2. **One source of truth per concept.** Duplicated lines are cheap;
-   duplicated concepts (a second HTTP client, context provider, config
-   source) are not (Metz: duplication is cheaper than the wrong
-   abstraction).
+2. **One owner per piece of knowledge.** Knowledge that must change in
+   one place (a protocol, a policy, a context-management scheme, how
+   outbound calls are logged) has one owner. Code that can diverge freely
+   is copied without guilt (Pike: a little copying is better than a little
+   dependency; Metz: duplication is cheaper than the wrong abstraction).
+   The test: when one copy changes, must the other change with it? A
+   second model client configured with a cheaper model is not a finding.
 3. **Reuse before building.** Take the first option that works: don't
    build it at all, use what's already in the codebase, use the standard
    library or a platform feature, use an installed dependency, and only
@@ -160,12 +170,12 @@ Two parts:
 `<!-- coding-principles:start -->` and `<!-- coding-principles:end -->`
 markers. Budget: about 80 lines. It holds:
 
-- Each adopted principle as a repo-specific rule, with one pointer to a
-  real example (`path:line`).
-- A table of canonical modules: "for X use `path`; don't add another".
-  Typical concepts include HTTP/API clients, config and environment,
-  logging, error types, state stores, database access, auth, feature
-  flags, and UI primitives.
+- Each adopted principle as a repo-specific rule in the repo's own names.
+  Examples live in the detail file.
+- A list of canonical modules, each a path and its symbol, introduced once
+  with "use it; don't add another". Typical concepts include HTTP/API
+  clients, config and environment, logging, error types, state stores,
+  database access, auth, feature flags, and UI primitives.
 - Design instructions: when designing a feature or writing a spec, use the
   `applying-coding-principles` skill; the spec must include its section
   under the exact heading "Coding principles applied"; when planning, copy
@@ -174,15 +184,21 @@ markers. Budget: about 80 lines. It holds:
   heading is the contract between the spec and the plan.
 - A severity line: breaking a rule in this guide is an Important finding.
 
-A rule the repo's linter enforces gets one line in `### Rules` naming the
-lint rule and its config file, with no examples. The detail file records
-only the decision behind it, as one line in the decision record. The
-canonical-modules table stays even when a lint rule backs an entry,
+A rule the repo's linter enforces gets no line in the always-loaded
+section: the linter reports it when it matters, and its message, where the
+rule takes one, says what to do and points to the detail file. The detail
+file names the lint rule in its principle's summary and records the
+decision behind it, as one line in the decision record. The
+canonical-modules list stays even when a lint rule backs an entry,
 because designers use it to find what to reuse.
 
 **2. A detail file**, `docs/coding-principles.md`. Per principle, it holds
-examples and counter-examples with paths and short excerpts, plus a
-record of every decision made with a human ("thin wrappers around
+examples and counter-examples written in place: short snippets in the
+repo's language and real names, shaped to make the point, never `path:line`
+citations that drift as the code changes. An example appears only where
+the rule's sentence alone could be misread. A one-off defect (an unused
+dependency, a dead file) is follow-up work, not an example. The file ends
+with a record of every decision made with a human ("thin wrappers around
 `ApiClient`: avoid — decided 2026-11-23"). Agents read it on demand. It is
 not loaded on every task.
 
@@ -192,14 +208,23 @@ missing. The skill never creates a `CLAUDE.md`. Claude Code reads
 `CLAUDE.md` that doesn't import `AGENTS.md`, the skill offers to add the
 line `@AGENTS.md` to it.
 
+**Neighbours:** `AGENTS.md` is shared. The skill changes nothing outside
+its markers, and a section another tool manages (between that tool's own
+markers) belongs to that tool. The block never repeats a rule the file
+already states. A decision that contradicts a line outside the markers
+stays out of the block until that line changes at its source; the detail
+file records it as a decision waiting on that change. The block's headings
+start at the level of the file's own top-level sections.
+
 ### Setup skill: `setting-up-coding-principles`
 
 Invoked to set up a repo, and again to refresh the guide.
 
-1. **Read the repo.** Languages and frameworks, existing instruction files,
-   lint and format config, structure, and any existing convention docs.
-   Existing rules are respected: a conflict with a principle is raised with
-   the user, never overwritten silently.
+1. **Read the repo.** Languages and frameworks, existing instruction files
+   (including sections other tools manage), lint and format config,
+   structure, and any existing convention docs. Existing rules are
+   respected: a conflict with a principle is raised with the user, never
+   overwritten silently.
 2. **List canonical modules.** Find the single source of truth for each
    common concept, with paths. Two candidates for one concept is a question
    for the user.
@@ -212,17 +237,16 @@ Invoked to set up a repo, and again to refresh the guide.
    or drops.
 5. **Prefer the linter.** For each decided rule, check whether the repo's
    existing linter can enforce it (for example, limiting which module may
-   import a library). If it can, propose the config change, apply it once
-   the user approves, and note it in the guide as a one-line pointer to the
-   lint rule. Adding a linter the repo doesn't use, or writing a custom lint
-   rule, is a build-vs-reuse question for the user.
+   import a library). If it can, propose the config change, with a message
+   that says what to do and points to the detail file, and apply it once
+   the user approves. Adding a linter the repo doesn't use, or writing a
+   custom lint rule, is a build-vs-reuse question for the user.
 6. **Show the draft, then write.** Write the always-loaded section and the
-   detail file. Every cited path must exist and every excerpt must be
-   quoted from the code.
+   detail file. Every path and symbol either file names must exist.
 7. **Refresh mode.** On a re-run, regenerate the content between the
    markers from the detail file's decision record, keep human edits
-   elsewhere, re-ask only new ambiguities, and report rules whose examples
-   or lint rules no longer exist. If someone edited the marked block by hand since the
+   elsewhere, re-ask only new ambiguities, and report rules whose paths,
+   symbols or lint rules no longer exist. If someone edited the marked block by hand since the
    last run, show the difference, record each edit as a decision in the
    detail file, and only then regenerate. Hand edits are never lost.
 
@@ -291,9 +315,10 @@ into the written spec.
   runs once after every change to the skill it covers. There is no CI
   harness in v1; runs are not deterministic enough to assert on
   automatically.
-- **Setup on the fixture:** every cited path exists; no rule is generic;
-  the skill asks about the wrappers; a lint-enforceable decision lands in
-  the linter config, with only a one-line pointer in the guide; in a copy
+- **Setup on the fixture:** every named path exists and no line number is
+  cited; no rule is generic; the skill asks about the wrappers; a
+  lint-enforceable decision lands in the linter config, with no line in the
+  always-loaded section and a message pointing to the detail file; in a copy
   with no linter, the skill asks before adding one; the always-loaded
   section stays within budget.
 - **End to end on the fixture:** brainstorm a feature that tempts a new

@@ -49,13 +49,13 @@ Two plausible homes for new code, a pattern the code does two ways, a rule that 
 The section holds these lines, one bullet each:
 
 - every canonical module the feature uses, as the one to use, adding no other;
-- every rule in `### Rules` stated as prose (not a lint pointer) that this feature could break, phrased for this feature;
+- every rule in `### Rules` that this feature could break, phrased for this feature;
 - each decision from steps 3 to 5;
 - a new decision the repo's linter can enforce, as a requirement to add that lint rule, naming the rule and its config file, instead of a prose line.
 
 Rules the linter already enforces are gated by the linter, so they get no line.
 
-Each line is a requirement that stands alone when copied out of the spec: what to use or where to put it, and what not to add. It cites the code it relies on as a backticked `path` or `path:line` that exists now. New code is placed by the existing directory it joins, because a new file's path doesn't exist yet. Anything backticked that looks like a path is read as one, so write dotted symbols like process.env without backticks. No sub-bullets, no prose between bullets, no references to other parts of the spec.
+Each line is a requirement that stands alone when copied out of the spec: what to use or where to put it, and what not to add. It cites the code it relies on as a backticked `path` that exists now, with the symbol where the path alone is ambiguous, and no line numbers: tasks edit those files while the plan runs. New code is placed by the existing directory it joins, because a new file's path doesn't exist yet. Anything backticked that looks like a path is read as one, so write dotted symbols like process.env without backticks. No sub-bullets, no prose between bullets, no references to other parts of the spec.
 
 Before handing over the spec, check every backticked path in the section exists.
 

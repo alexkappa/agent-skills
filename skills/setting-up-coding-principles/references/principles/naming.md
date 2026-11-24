@@ -25,8 +25,8 @@ A good name says what a thing is or does, in the domain's words. When something 
 
 Name the domain word to use, or the suffix to avoid and what to do instead of renaming.
 
-- Shape: "<Concept> is `<Term>`; don't call it <synonyms>. Example: `<path:line>`." Or: "Don't add `*Manager` or `*Helper` types; if nothing better fits, split or merge the code. Example: `<path:line>`."
-- Example: "The paying party is `Account` everywhere; don't introduce `Customer` or `Payer`. Example: `pkg/accounts/account.go:9`."
+- Shape: "<Concept> is `<Term>`; don't call it <synonyms>." Or: "Don't add `*Manager` or `*Helper` types; if nothing better fits, split or merge the code."
+- Example: "The paying party is `Account` everywhere; don't introduce `Customer` or `Payer`."
 
 ## Lint enforcement
 

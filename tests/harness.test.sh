@@ -24,12 +24,12 @@ make_good() {
 ## Coding principles
 
 ### Rules
-- Use `request` for HTTP; see `src/lib/http.ts:3`.
-- Hide currency rules in `src/lib/money.ts:10`.
-- Keep layers honest; lint rule `import/no-restricted-paths` enforces it.
+- Use `request()` in `src/lib/http.ts` for HTTP.
+- Hide currency rules in `src/lib/money.ts`.
 
 ### Canonical modules
-- `src/lib/` holds shared helpers.
+One owner each: use it, and don't add another.
+- Shared helpers: `src/lib/`.
 
 ### When designing
 Use the `applying-coding-principles` skill, and copy the "Coding principles applied" section verbatim into the plan's Global Constraints.
@@ -97,24 +97,32 @@ edit "$r/AGENTS.md" '/^### Canonical modules$/d'
 expect_fail "missing heading" "$r" "missing heading: ### Canonical modules"
 
 r=$(make_good)
-edit "$r/AGENTS.md" 's|src/lib/http.ts:3|src/lib/nope.ts|'
+edit "$r/AGENTS.md" 's|src/lib/http.ts|src/lib/nope.ts|'
 expect_fail "cited path missing" "$r" "cited path does not exist: src/lib/nope.ts"
 
 r=$(make_good)
-edit "$r/AGENTS.md" 's|src/lib/money.ts:10|src/lib/money.ts:9999|'
-expect_fail "line past end of file" "$r" "cited line past end of file: src/lib/money.ts:9999"
+edit "$r/AGENTS.md" 's|`src/lib/money.ts`|`src/lib/money.ts:10`|'
+expect_fail "line number cited" "$r" "line number cited: src/lib/money.ts:10"
+
+r=$(make_good)
+edit "$r/AGENTS.md" 's|^## Coding principles$|# Coding principles|; s|^### |## |'
+check "block at the file's # level passes" "$here/check-guide.sh" "$r"
+
+r=$(make_good)
+edit "$r/AGENTS.md" 's|^## Coding principles$|# Coding principles|'
+expect_fail "block with mixed heading levels" "$r" "missing heading: ## Rules"
 
 r=$(make_good)
 edit "$r/AGENTS.md" 's|Coding principles applied|something else|'
-expect_fail "When designing lacks section name" "$r" "### When designing does not name \"Coding principles applied\""
+expect_fail "When designing lacks section name" "$r" "When designing does not name \"Coding principles applied\""
 
 r=$(make_good)
 edit "$r/AGENTS.md" 's|applying-coding-principles|some-skill|'
-expect_fail "When designing lacks skill name" "$r" "### When designing does not name applying-coding-principles"
+expect_fail "When designing lacks skill name" "$r" "When designing does not name applying-coding-principles"
 
 r=$(make_good)
 edit "$r/AGENTS.md" 's|Breaking a rule in this guide is an Important finding.|Rules are nice.|'
-expect_fail "wrong severity text" "$r" "### Severity text is not exact"
+expect_fail "wrong severity text" "$r" "Severity text is not exact"
 
 r=$(make_good)
 rm "$r/docs/coding-principles.md"

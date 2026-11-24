@@ -25,10 +25,10 @@ A module earns its place by hiding real complexity behind an interface much smal
 
 ## Writing the repo rule
 
-Name the deep module to call directly and the shallow shape to avoid, in the repo's own names. Point at a direct caller.
+Name the deep module to call directly and the shallow shape to avoid, in the repo's own names. A test-seam convention the human keeps (a `Protocol` per collaborator, say) is a consistency rule, not this one.
 
-- Shape: "Use `<function()>` in `<path>` directly; don't wrap it in <shallow shape>. Example: `<path:line>`."
-- Example: "Call `Store.Query()` in `internal/store/store.go` directly; don't add per-entity repository types that forward to it. Example: `internal/orders/list.go:41`."
+- Shape: "Use `<function()>` in `<path>` directly; don't wrap it in <shallow shape>."
+- Example: "Call `Store.Query()` in `internal/store/store.go` directly; don't add per-entity repository types that forward to it."
 
 ## Lint enforcement
 

@@ -26,14 +26,15 @@ A new dependency is an alternative to step 5, never a default. Build vs reuse is
 - Hand-written code duplicates the stdlib, the platform, or an installed dependency: ask whether to replace it, or whether it exists for a reason (bundle size, an upstream bug, licensing).
 - The repo has a dependency policy (an allowlist, "no new dependencies", vendoring): ask whether it holds and who approves exceptions.
 - A capability that features keep needing (validation, retries, dates) has no settled answer: ask which library or module new code uses, so later designs don't re-decide it.
+- Not a question, and not an example: a dependency nothing imports. Put its removal on the follow-up list. If the repo wants unused dependencies caught from now on, that's a lint question (below).
 
 ## Writing the repo rule
 
 Record the order once, then one line per concrete decision.
 
 - Order: "Before writing a helper, check `<utils path>`, the standard library, and installed dependencies; ask before adding a dependency or a new helper."
-- Decision shape: "For <need>, use <existing module or package>; don't hand-roll it. Example: `<path:line>`."
-- Example: "Retry network calls with `tenacity`, already a dependency; don't write retry loops. Example: `app/sync/fetch.py:27`."
+- Decision shape: "For <need>, use <existing module or package>; don't hand-roll it."
+- Example: "Retry network calls with `tenacity`, already a dependency; don't write retry loops."
 
 ## Lint enforcement
 

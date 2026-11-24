@@ -6,9 +6,9 @@ export default [
     languageOptions: { parser: tseslint.parser },
     plugins: { "@typescript-eslint": tseslint.plugin },
     rules: {
-      "no-restricted-globals": ["error", { name: "fetch", message: "Use request() from src/lib/http.ts." }],
-      "no-restricted-properties": ["error", { object: "process", property: "env", message: "Read settings from config in src/config.ts." }],
-      "no-restricted-imports": ["error", { patterns: [{ group: ["**/legacy/fetch-helper"], message: "Use request() from src/lib/http.ts." }] }],
+      "no-restricted-globals": ["error", { name: "fetch", message: "Use request() from src/lib/http.ts. See docs/coding-principles.md (One owner)." }],
+      "no-restricted-properties": ["error", { object: "process", property: "env", message: "Read settings from config in src/config.ts. See docs/coding-principles.md (One owner)." }],
+      "no-restricted-imports": ["error", { patterns: [{ group: ["**/legacy/fetch-helper"], message: "Use request() from src/lib/http.ts. See docs/coding-principles.md (One owner)." }] }],
       "no-useless-catch": "error",
       "no-warning-comments": ["error", { terms: ["plan", "spec", "task"], location: "anywhere" }],
       "@typescript-eslint/naming-convention": ["error", { selector: "typeLike", format: null, custom: { regex: "(Manager|Helper)$", match: false } }],

@@ -46,9 +46,10 @@ Pass when all hold:
 - It proposes an ESLint rule backing the HTTP decision (for example `no-restricted-imports` for the legacy helper, or restricting `fetch` outside `src/lib/http.ts`), showing the config change first.
 - `tests/check-guide.sh` exits 0.
 - `### Canonical modules` names `src/lib/http.ts`, `src/lib/errors.ts`, and `src/config.ts`.
-- Every `### Rules` bullet cites a backticked path.
+- Every `### Rules` bullet names a module of this repo, and none carries an example.
 - `## Decisions` in `docs/coding-principles.md` records both answers.
-- `eslint.config.js` holds the accepted rule, and `### Rules` has one line naming that rule and `eslint.config.js`, with no example; `docs/coding-principles.md` mentions it only in one `## Decisions` line.
+- `eslint.config.js` holds the accepted rule, its message ending "See docs/coding-principles.md (<principle>)."; `### Rules` has no line for it; `docs/coding-principles.md` names it in its principle's summary and in one `## Decisions` line, with no snippet for it.
+- Every snippet in `docs/coding-principles.md` is written for its point, with no path or line number heading it.
 - No `CLAUDE.md` exists.
 
 Keep this copy for S4.
@@ -68,6 +69,8 @@ Pass when all hold:
   ```
 
   Blank lines the skill added around the block are the only allowed difference.
+- The block has no rule about wrapper classes, and `## Decisions` records the wrapper decision as waiting on the overlay's "Wrap every API resource" line.
+- No `### Rules` bullet restates a line from the overlay.
 - `tests/check-guide.sh` exits 0.
 
 ### S3: existing CLAUDE.md (`claude-md`)
@@ -106,7 +109,7 @@ Pass when all hold:
 
 - The skill shows the hand edit before regenerating.
 - After you keep it, "integer cents" appears in `## Decisions` and in the regenerated block.
-- The skill reports each rule, decision, or lint rule that cited `src/legacy/fetch-helper.ts`.
+- The skill reports each rule, snippet, decision, or lint rule that named `src/legacy/fetch-helper.ts`.
 - `tests/check-guide.sh` exits 0.
 
 ### S5: questions (all runs)
@@ -123,5 +126,5 @@ Pass when all hold:
 
 - The skill asks before adding a linter or its dependencies.
 - After you decline, no linter config exists and `package.json` matches the commit: `git status --short` lists only `AGENTS.md` and `docs/`.
-- `### Rules` states the HTTP rule as prose with an example, not as a lint pointer.
+- `### Rules` states the HTTP rule as prose, since no lint rule backs it.
 - `tests/check-guide.sh` exits 0.

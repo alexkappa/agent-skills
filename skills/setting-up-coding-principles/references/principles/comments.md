@@ -31,8 +31,8 @@ Search comment lines (`//`, `#`, `/*`, `"""`, `--`) for:
 
 Say what comments are for and name the exact terms to keep out, using this repo's codenames and doc locations.
 
-- Shape: "Comments explain why, next to the code they explain; don't reference <plans, specs, tickets> or use <codenames>. Example: `<path:line>`."
-- Example: "Don't mention specs, plans, task numbers, or the `orbit` codename in code; put that context in the commit message. Example: `lib/sync/queue.py:40`."
+- Shape: "Comments explain why, next to the code they explain; don't reference <plans, specs, tickets> or use <codenames>."
+- Example: "Don't mention specs, plans, task numbers, or the `orbit` codename in code; put that context in the commit message."
 
 ## Lint enforcement
 
