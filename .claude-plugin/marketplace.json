@@ -1,0 +1,14 @@
+{
+  "name": "agent-skills",
+  "owner": {
+    "name": "Alex Kalyvitis"
+  },
+  "plugins": [
+    {
+      "name": "coding-principles",
+      "source": "./",
+      "description": "Repo-specific coding principles for superpowers: a guide built from your own code, applied in every spec",
+      "version": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+# Coding principles
+
+The always-loaded rules are in the coding principles block of `AGENTS.md`. This file holds the evidence and the decisions behind them.
+
+## Comments
+
+Comments explain why, next to the code; plan, spec, and task references go in commit messages. Lint enforces this.
+
+### Follow
+- Explain the why the code can't show, in a comment beside it.
+
+### Avoid
+- References to plans, specs, or task numbers in comments.
+
+## Deep modules
+
+New API code calls `request()` directly from plain exported functions in `src/api/`; per-resource client classes add names without hiding anything.
+
+### Follow
+- `src/api/users.ts:9`: a plain function that calls `request()`, with no wrapper layer.
+  ```ts
+  export function listUsers(): Promise<User[]> {
+    return request<User[]>("/users");
+  ```
+
+### Avoid
+- `src/api/invoices-client.ts:9`: a class whose every method is one line forwarding to `request()`; write plain functions instead. Existing classes stay for now.
+  ```ts
+  export class InvoicesClient {
+    fetchAll(): Promise<Invoice[]> {
+      return request<Invoice[]>("/invoices");
+  ```
+
+## Naming
+
+API reads are `list<Resources>()` and `get<Resource>(id)`. Don't use role suffixes like `*Manager` or `*Helper` (lint enforces this); if nothing better fits, rethink the boundary.
+
+### Follow
+- `src/api/users.ts:9`: `list` plus the plural resource.
+  ```ts
+  export function listUsers(): Promise<User[]> {
+  ```
+
+### Avoid
+- `src/api/payments-client.ts:10`: `retrieve*` where `fetchAll` in `src/api/invoices-client.ts` already names the same operation; use `listPayments()`.
+  ```ts
+    retrieveAll(): Promise<Payment[]> {
+  ```
+
+## No defensive padding
+
+Validate at the edges (HTTP responses in `request()`, environment in `src/config.ts`) and trust types past them. Missing required config fails at startup.
+
+### Follow
+- `src/lib/http.ts:9`: the network edge turns a bad response into `HttpError`.
+  ```ts
+    if (!res.ok) throw new HttpError(res.status, await res.text());
+  ```
+
+### Avoid
+- `src/services/invoice-service.ts:7`: null checks on a required `string` parameter and an injected `readonly` field; delete them.
+  ```ts
+      if (userId === null || userId === undefined) {
+        throw new Error("userId is required");
+  ```
+- `src/config.ts:3`: a missing token silently becomes `""` and fails later as a 401; fail at startup instead.
+  ```ts
+    apiToken: process.env.API_TOKEN ?? "",
+  ```
+
+## One source of truth
+
+`request()` in `src/lib/http.ts` is the only HTTP client and `config` in `src/config.ts` the only settings source. Lint enforces both.
+
+### Follow
+- `src/lib/http.ts:4`: the one HTTP client, adding base URL, auth, and `HttpError`.
+  ```ts
+  export async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  ```
+- `src/config.ts:1`: the one place settings are read.
+  ```ts
+  export const config = {
+  ```
+
+### Avoid
+- `src/reports/monthly.ts:4`: hardcodes the API base URL that `config` owns; call `request()` with a path.
+  ```ts
+    const rows = await getJson(`https://api.example.com/reports/${month}`);
+  ```
+
+## Decisions
+- `request()` in `src/lib/http.ts` is the canonical HTTP client; `src/legacy/fetch-helper.ts` is to be avoided — decided 2026-11-23
+- New API code calls `request()` directly from plain functions; `InvoicesClient` and `PaymentsClient` stay as they are for now — decided 2026-11-23
+- API reads are named `list<Resources>()` and `get<Resource>(id)`, not `fetch*` or `retrieve*` — decided 2026-11-23
+- Missing required config fails at startup instead of defaulting; the existing fallbacks in `src/config.ts` change in a follow-up — decided 2026-11-23
+- Lint accepted: `no-restricted-globals` (fetch), `no-restricted-properties` (process.env), `no-restricted-imports` (legacy helper), exempting `src/lib/http.ts`, `src/legacy/fetch-helper.ts`, `src/config.ts`, and `src/reports/monthly.ts` as needed — decided 2026-11-23
+- Lint accepted: `no-useless-catch`, exempting `src/services/invoice-service.ts` — decided 2026-11-23
+- Lint declined: `@typescript-eslint/no-unnecessary-condition`, since it needs type-aware linting — decided 2026-11-23
+- Lint accepted: `no-warning-comments` with terms plan, spec, task, exempting `src/api/users.ts` — decided 2026-11-23
+- Lint accepted: `@typescript-eslint/naming-convention` banning `*Manager` and `*Helper` type names, exempting `src/services/invoice-service.ts` — decided 2026-11-23
+- Adopted: Comments, Deep modules, Naming, No defensive padding, One source of truth — decided 2026-11-23
+- Dropped: Consistency, Make the change easy, Reuse before building — decided 2026-11-23

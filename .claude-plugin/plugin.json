@@ -1,0 +1,10 @@
+{
+  "name": "coding-principles",
+  "version": "0.1.0",
+  "description": "Repo-specific coding principles for superpowers: a guide built from your own code, applied in every spec",
+  "author": {
+    "name": "Alex Kalyvitis"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/alexkappa/agent-skills"
+}
