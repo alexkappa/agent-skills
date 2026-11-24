@@ -12,14 +12,13 @@ log=$(mktemp -d)
 allow="Read(/$repo/skills/**),Bash(git log:*),Bash(git ls-files:*),Bash(git diff:*),Bash(git show:*),Bash(date:*)"
 copy=$(tests/fixture-copy.sh <variant>)
 cd "$copy"
-claude -p --plugin-dir "$repo" --permission-mode acceptEdits --allowedTools "$allow" \
-  "Write coding conventions for this repository into AGENTS.md" | tee "$log/turn-1.txt"
+claude -p "Write coding conventions for this repository into AGENTS.md" --plugin-dir "$repo" --permission-mode acceptEdits --allowedTools "$allow" | tee "$log/turn-1.txt"
 ```
 
 Answer each question the skill asks in the same conversation, saving every reply outside the copy:
 
 ```bash
-claude -p -c --plugin-dir "$repo" --permission-mode acceptEdits --allowedTools "$allow" "<answer>" | tee "$log/turn-2.txt"
+claude -p -c "<answer>" --plugin-dir "$repo" --permission-mode acceptEdits --allowedTools "$allow" | tee "$log/turn-2.txt"
 ```
 
 `--allowedTools` grants read-only access the headless run can't ask for: reading the skill's own files, which sit outside the copy, and the git and `date` commands the skill uses. It grants no writes.

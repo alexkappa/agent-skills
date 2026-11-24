@@ -18,6 +18,9 @@ if [ "$variant" != none ]; then
 fi
 
 git -C "$dir" init -q
+git -C "$dir" config user.name fixture
+git -C "$dir" config user.email fixture@example.invalid
+git -C "$dir" config commit.gpgsign false
 git -C "$dir" add -A
-git -C "$dir" -c user.name=fixture -c user.email=fixture@example.com commit -q -m "fixture"
+git -C "$dir" commit -q -m "fixture"
 echo "$dir"

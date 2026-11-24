@@ -14,8 +14,8 @@ Build the repo's coding principles guide from its own code: a short block in `AG
 
 - **The code shows a pattern; the human decides whether it's the rule.** When the code does one thing two ways, or a repeated pattern breaks a principle, ask. Never codify the pattern you found (a wrapper class per resource, a legacy module still in use) without asking.
 - **No file changes until the human approves the draft.** That includes lint config.
-- **Write only the guide, lint config, and the `@AGENTS.md` line.** Leave source files alone: exempt existing violations in the lint config instead of fixing them, and cite only code that exists before you write. Offer code fixes as follow-up work.
-- **`AGENTS.md` only.** The guide lives in `AGENTS.md`, created if missing. Claude Code loads `AGENTS.md` when the repo has no `CLAUDE.md`, and ignores it when there is one. So never create `CLAUDE.md` or suggest creating one. If `CLAUDE.md` exists without a line `@AGENTS.md`, offer to add that line, and add it only after a yes.
+- **Write only the guide, lint config, a dependency the human approved in step 5 (added with the repo's package manager), and the `@AGENTS.md` line.** Leave source files alone: exempt existing violations in the lint config instead of fixing them, and cite only code that exists before you write. Offer code fixes as follow-up work.
+- **`AGENTS.md` only.** The guide lives in `AGENTS.md`, created if missing. Claude Code loads `AGENTS.md` when the repo has no `CLAUDE.md`, and ignores it when there is one. So never create `CLAUDE.md` or suggest creating one. If `CLAUDE.md` exists without a line `@AGENTS.md`, offer to add that line, and add it only after a yes. If `CLAUDE.md` resolves to `AGENTS.md` (a symlink), make no offer.
 - **Outside the markers is the human's.** Never change a line of `AGENTS.md` outside the markers. If a decision contradicts one, quote the line and ask whether to change it.
 - **Every citation is real.** Every path exists, every `path:line` points at the quoted line, and every excerpt is copied from the file. Anything backticked that looks like a path is read as one, so write a dotted symbol or the import line (process.env, @AGENTS.md) without backticks; `references/guide-format.md` defines the shape.
 
@@ -31,7 +31,7 @@ For each concept the repo has (HTTP or API client, config and environment, loggi
 
 ### 3. Interpret each principle against the code
 
-For each principle file, search with its "Signals in code", then read the code around every match. Signals are starting points: some are regexes, some are shapes to look for, and a few match far too much as written. Nothing is an example or a counter-example until you've read it.
+For each principle file, search with its "Signals in code", then read the code around enough matches to classify each signal. Signals are starting points: some are regexes, some are shapes to look for, and a few match far too much as written. Nothing is an example or a counter-example until you've read it.
 
 Sort what you find:
 
@@ -75,6 +75,7 @@ After a yes:
    - Every `path:line` shows the quoted lines.
    - The block is at most 90 lines.
    - Nothing outside the markers changed (`git diff`).
+   - If you changed lint config, run the repo's lint command; it must pass. If it can't run (dependencies not installed), say so in the summary instead of claiming it passes.
 
 ### 7. Refresh
 

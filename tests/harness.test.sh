@@ -133,6 +133,14 @@ edit "$r/docs/coding-principles.md" 's| — decided 2026-11-23||'
 expect_fail "decision without date" "$r" "decision line lacks"
 
 r=$(make_good)
+{ cat "$r/AGENTS.md"; sed -n '/coding-principles:start/,/coding-principles:end/p' "$r/AGENTS.md"; } > "$r/AGENTS.md.new" && mv "$r/AGENTS.md.new" "$r/AGENTS.md"
+expect_fail "doubled block" "$r" "start marker appears more than once"
+
+r=$(make_good)
+printf '\n```ts\nrequest(`/users/`)\n```\n' >> "$r/docs/coding-principles.md"
+check "template literal in excerpt passes" "$here/check-guide.sh" "$r"
+
+r=$(make_good)
 printf 'Build notes only.\n' > "$r/CLAUDE.md"
 out=$("$here/check-guide.sh" "$r" 2>&1) && status=0 || status=$?
 { [ "$status" -eq 0 ] && grep -q '^WARN:' <<<"$out"; } && pass "CLAUDE.md without import warns" || bad "CLAUDE.md without import warns"

@@ -16,8 +16,10 @@ if [ -f "$repo/AGENTS.md" ]; then
 else
   fail "AGENTS.md is missing"
 fi
-grep -qxF "$start" <<<"$block" || fail "missing start marker"
-grep -qxF "$end" <<<"$block" || fail "missing end marker"
+[ "$(grep -cxF "$start" <<<"$block" || true)" -ge 1 ] || fail "missing start marker"
+[ "$(grep -cxF "$end" <<<"$block" || true)" -ge 1 ] || fail "missing end marker"
+[ "$(grep -cxF "$start" "$repo/AGENTS.md" 2>/dev/null || true)" -le 1 ] || fail "start marker appears more than once"
+[ "$(grep -cxF "$end" "$repo/AGENTS.md" 2>/dev/null || true)" -le 1 ] || fail "end marker appears more than once"
 
 lines=$(grep -c '' <<<"$block" || true)
 [ "$lines" -le 90 ] || fail "block is $lines lines, over the 90 limit"
@@ -73,7 +75,7 @@ while IFS= read -r token; do
   elif [ -n "$line" ] && [ "$line" -gt "$(awk 'END { print NR }' "$repo/$file")" ]; then
     fail "cited line past end of file: $token"
   fi
-done < <({ echo "$block"; [ ! -f "$repo/$detail" ] || cat "$repo/$detail"; } | { grep -o '`[^`]*`' || true; } | tr -d '`' | sort -u)
+done < <({ echo "$block"; [ ! -f "$repo/$detail" ] || cat "$repo/$detail"; } | awk '/^```/ { skip = !skip; next } !skip' | { grep -o '`[^`]*`' || true; } | tr -d '`' | sort -u)
 
 if [ -f "$repo/CLAUDE.md" ] && ! grep -qE '^@AGENTS\.md[[:space:]]*$' "$repo/CLAUDE.md"; then
   echo "WARN: CLAUDE.md does not import @AGENTS.md"

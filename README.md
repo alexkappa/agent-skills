@@ -27,7 +27,7 @@ To make it available to everyone working in a repo, add this to the repo's commi
 
 ## Usage
 
-1. Once per repo, ask Claude to set up coding principles. The `setting-up-coding-principles` skill reads the code, asks you about the patterns it can't judge alone, and writes the guide into `AGENTS.md` and `docs/coding-principles.md`. Run it again to refresh the guide.
+1. Once per repo, ask Claude to set up coding principles. The `setting-up-coding-principles` skill reads the code, asks you about the patterns it can't judge alone, and writes the guide into `AGENTS.md` and `docs/coding-principles.md`. Run it again to refresh the guide. Setup may edit the linter config, and add a linter dependency, only after you approve it.
 2. Then brainstorm features with superpowers as usual. The `applying-coding-principles` skill runs before the approaches are laid out and writes the spec's "Coding principles applied" section.
 
 ## Requirements
@@ -43,4 +43,4 @@ bash tests/harness.test.sh
 bash tests/catalog.test.sh
 ```
 
-The skills' behaviour is checked by hand with the procedures in `tests/procedures/`: `setup.md` for the setup skill and `design-to-review.md` for the path from spec to plan to task review. Each check runs headless `claude -p` against a fresh copy of the fixture repo in `tests/fixtures/`, made with `tests/fixture-copy.sh <variant>`.
+The skills' behaviour is checked by hand with the procedures in `tests/procedures/`: `setup.md` for the setup skill and `design-to-review.md` for the path from spec to plan to task review. Each check runs headless `claude -p` against a fresh copy of the fixture repo in `tests/fixtures/`, made with `tests/fixture-copy.sh <variant>`. The procedures need `jq`, `perl`, and superpowers 7.0.2 at the official plugin cache path.

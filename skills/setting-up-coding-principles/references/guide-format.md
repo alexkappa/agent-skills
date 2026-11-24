@@ -59,7 +59,7 @@ The always-loaded rules are in the coding principles block of `AGENTS.md`. This 
 - <What was decided, in the repo's names> — decided <YYYY-MM-DD>
 ````
 
-- One `## <principle name>` per adopted principle, in catalog order, each with `### Follow` and `### Avoid`, even when lint enforces all of its rules. When the code has nothing for one side, write the rule as one line there, with no excerpt.
+- One `## <principle name>` per adopted principle (a short name is fine), each with `### Follow` and `### Avoid`, even when lint enforces all of its rules. When the code has nothing for one side, write the rule as one line there, with no excerpt.
 - A lint-backed rule has no examples here; its only trace is its line under `## Decisions`. The principle's other rules and its canonical modules still get examples.
 - `## Decisions` is last. One line per decision made with the human: each answer, each principle adopted or dropped, each lint rule accepted or declined, each hand edit kept. Every line ends with ` — decided YYYY-MM-DD` (an em dash) and nothing after it.
 - Every cited path exists, every `path:line` points at the quoted line, and every excerpt is copied from the file, not paraphrased.

@@ -45,7 +45,7 @@ Answer any question the skill asks by accepting its recommendation.
 Prerequisite: `claude --version` is 2.1.277 or later, which Claude Code needs to load `AGENTS.md`. Otherwise stop and report.
 
 ```bash
-claude -p "Dispatch a general-purpose subagent. Ask it to quote the first row of the Canonical modules table from its instructions without reading any files."
+claude -p "Dispatch a general-purpose subagent. Ask it to quote the first item of the Canonical modules list from its instructions without reading any files."
 ```
 
 Pass when the subagent quotes the first `### Canonical modules` entry, the one naming `src/lib/http.ts`. Repeat in a fresh copy that also holds a `CLAUDE.md` whose only line is `@AGENTS.md`; it must pass too.

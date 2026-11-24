@@ -24,6 +24,7 @@ Search comment lines (`//`, `#`, `/*`, `"""`, `--`) for:
 - Ticket references are common: ask whether they're accepted pointers in this repo or plan references to stop adding.
 - A cross-file warning guards a real invariant the code can't express yet: ask whether to keep it or make it checkable.
 - A term looks like a codename but may be the product's real name: ask.
+- Lint terms such as "spec" and "plan" may be domain words (billing plans): confirm they are not, and prefer exact phrases like "the plan" or "Task N".
 - Doc comments (JSDoc, docstrings, godoc) are required by tooling or a public-API policy: ask what's required so the rule doesn't fight it.
 
 ## Writing the repo rule
