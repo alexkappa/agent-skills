@@ -48,6 +48,8 @@ channel superpowers enforces strictly.
   every rule points at real code in the repo's own language.
 - The guide names the repo's canonical modules (one per concept), so a
   diff-only reviewer can spot duplication from the guide alone.
+- A rule the repo's linter can enforce is enforced there, as a hard gate.
+  The guide only notes which lint rule enforces it.
 - Every pattern question ("is this a pattern to follow or one to avoid?")
   is settled with a human during setup or feature design, never during
   implementation.
@@ -59,7 +61,9 @@ channel superpowers enforces strictly.
 
 ## Non-goals (v1)
 
-- Lint or CI enforcement, and automatic refactoring of existing code.
+- Automatic refactoring of existing code.
+- Learning from corrections: turning a reviewer finding or a human
+  correction into a lint rule or a guide decision.
 - Separate guides per package in a monorepo. One guide per repo.
 - Replacing superpowers' reviewers or how it dispatches them.
 - Tools that don't read AGENTS.md.
@@ -71,6 +75,7 @@ These would make it a failure even if it technically works:
 - Generic rules ("use meaningful names") that could be pasted into any
   repo.
 - Writing down existing bad patterns as rules because they're common.
+- Prose rules for something a linter could enforce.
 - A guide so long it bloats every agent on every task.
 - Forking superpowers, or Claude-only machinery (hooks, custom agents)
   that isn't visible in the repo.
@@ -125,9 +130,11 @@ The starting set:
    duplicated concepts (a second HTTP client, context provider, config
    source) are not (Metz: duplication is cheaper than the wrong
    abstraction).
-3. **Reuse before building.** Framework features, existing helpers, and
-   hardened libraries come before hand-rolled code. Build vs reuse is a
-   human decision, made at design time.
+3. **Reuse before building.** Take the first option that works: don't
+   build it at all, use what's already in the codebase, use the standard
+   library or a platform feature, use an installed dependency, and only
+   then write new code (after ponytail's ladder). Build vs reuse is a human
+   decision, made at design time.
 4. **Naming is a design signal.** If something is hard to name, the
    abstraction is probably wrong; renaming alone doesn't fix it.
 5. **Consistency with the repo.** New code follows the patterns already
@@ -142,7 +149,8 @@ The starting set:
 
 Each catalog file holds: the principle in a few lines; the signals that
 reveal it in code (what to search for); what counts as ambiguous and must
-be asked; and how to phrase a repo-specific rule.
+be asked; how to phrase a repo-specific rule; and which parts of it a
+linter can typically enforce.
 
 ### The guide in each repo
 
@@ -165,6 +173,12 @@ markers. Budget: about 80 lines. It holds:
   if a spec lacks the section, run the companion before planning. The
   heading is the contract between the spec and the plan.
 - A severity line: breaking a rule in this guide is an Important finding.
+
+A rule the repo's linter enforces gets one line in `### Rules` naming the
+lint rule and its config file, with no examples. The detail file records
+only the decision behind it, as one line in the decision record. The
+canonical-modules table stays even when a lint rule backs an entry,
+because designers use it to find what to reuse.
 
 **2. A detail file**, `docs/coding-principles.md`. Per principle, it holds
 examples and counter-examples with paths and short excerpts, plus a
@@ -196,13 +210,19 @@ Invoked to set up a repo, and again to refresh the guide.
    three real excerpts per question, in the style of superpowers'
    brainstorming. The user also confirms which principles the repo adopts
    or drops.
-5. **Show the draft, then write.** Write the always-loaded section and the
+5. **Prefer the linter.** For each decided rule, check whether the repo's
+   existing linter can enforce it (for example, limiting which module may
+   import a library). If it can, propose the config change, apply it once
+   the user approves, and note it in the guide as a one-line pointer to the
+   lint rule. Adding a linter the repo doesn't use, or writing a custom lint
+   rule, is a build-vs-reuse question for the user.
+6. **Show the draft, then write.** Write the always-loaded section and the
    detail file. Every cited path must exist and every excerpt must be
    quoted from the code.
-6. **Refresh mode.** On a re-run, regenerate the content between the
+7. **Refresh mode.** On a re-run, regenerate the content between the
    markers from the detail file's decision record, keep human edits
    elsewhere, re-ask only new ambiguities, and report rules whose examples
-   no longer exist. If someone edited the marked block by hand since the
+   or lint rules no longer exist. If someone edited the marked block by hand since the
    last run, show the difference, record each edit as a decision in the
    detail file, and only then regenerate. Hand edits are never lost.
 
@@ -231,7 +251,8 @@ into the written spec.
    lines written as requirements with real paths, for example "Calls to the
    billing API go through `src/lib/http.ts`; add no new client." They are
    written so `writing-plans` can copy them verbatim into Global
-   Constraints.
+   Constraints. A decision the repo's linter can enforce becomes a
+   requirement to add that lint rule instead of a prose line.
 7. If a decision changes the guide (a new canonical module, a new rule),
    propose a guide update.
 
@@ -260,22 +281,26 @@ into the written spec.
 ## Verification
 
 - **Fixture repo** (under `tests/fixtures/` in this repo): a small,
-  realistic codebase with one canonical HTTP client, a couple of thin
-  wrappers around it (ambiguous), a comment that references a plan, and
-  similar planted cases. Fixtures are stored without live instruction files
+  realistic codebase with a linter config, one canonical HTTP client, a
+  couple of thin wrappers around it (ambiguous), a comment that references
+  a plan, and similar planted cases. Fixtures are stored without live instruction files
   and copied to a temporary directory for each run, so they never act as
   instructions while someone works in this repo.
 - **How checks run:** each check below is a written procedure that an
-  agent runs against a fresh copy of the fixture and reports on. There is
-  no CI harness in v1; runs are not deterministic enough to assert on
+  agent runs against a fresh copy of the fixture and reports on. Each check
+  runs once after every change to the skill it covers. There is no CI
+  harness in v1; runs are not deterministic enough to assert on
   automatically.
 - **Setup on the fixture:** every cited path exists; no rule is generic;
-  the skill asks about the wrappers; the always-loaded section stays within
-  budget.
-- **End to end on the fixture:** brainstorm a feature that tempts a second
-  HTTP client. The spec must name the existing client, the plan's Global
-  Constraints must carry that line, and the task reviewer must flag a
-  planted violation as a spec failure.
+  the skill asks about the wrappers; a lint-enforceable decision lands in
+  the linter config, with only a one-line pointer in the guide; in a copy
+  with no linter, the skill asks before adding one; the always-loaded
+  section stays within budget.
+- **End to end on the fixture:** brainstorm a feature that tempts a new
+  thin wrapper around the existing HTTP client, a rule no linter enforces.
+  The spec must name the existing client and forbid the wrapper, the plan's
+  Global Constraints must carry those lines, and the task reviewer must
+  flag a planted wrapper as a spec failure.
 - **Compatibility checks:** subagents see a guide that lives only in
   `AGENTS.md`, both with no `CLAUDE.md` and with one that imports it;
   brainstorming invokes the companion from the guide's instruction alone;
