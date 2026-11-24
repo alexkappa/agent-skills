@@ -137,7 +137,7 @@ r=$(make_good)
 expect_fail "doubled block" "$r" "start marker appears more than once"
 
 r=$(make_good)
-printf '\n```ts\nrequest(`/users/`)\n```\n' >> "$r/docs/coding-principles.md"
+printf '\n  ```ts\n  request(`/users/`)\n  ```\n' >> "$r/docs/coding-principles.md"
 check "template literal in excerpt passes" "$here/check-guide.sh" "$r"
 
 r=$(make_good)
