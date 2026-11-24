@@ -1,0 +1,13 @@
+diff --git a/src/lib/money.ts b/src/lib/money.ts
+index 9cc3a87..ce33e87 100644
+--- a/src/lib/money.ts
++++ b/src/lib/money.ts
+@@ -22,3 +22,8 @@ export function addMoney(a: Money, b: Money): Money {
+   if (a.currency !== b.currency) throw new Error("Currency mismatch");
+   return { cents: a.cents + b.cents, currency: a.currency };
+ }
++
++// The plan says to sum in cents and format once, so rounding happens in one place.
++export function sumMoney(amounts: Money[], currency: Currency): Money {
++  return amounts.reduce(addMoney, { cents: 0, currency });
++}

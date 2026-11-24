@@ -1,0 +1,33 @@
+diff --git a/src/api/export-client.ts b/src/api/export-client.ts
+new file mode 100644
+index 0000000..e8e4215
+--- /dev/null
++++ b/src/api/export-client.ts
+@@ -0,0 +1,11 @@
++import { request } from "../lib/http";
++
++export class ExportClient {
++  getRows<T>(path: string): Promise<T> {
++    return request<T>(path);
++  }
++
++  getRow<T>(path: string, id: string): Promise<T> {
++    return request<T>(`${path}/${id}`);
++  }
++}
+diff --git a/src/api/invoice-export.ts b/src/api/invoice-export.ts
+new file mode 100644
+index 0000000..babb6aa
+--- /dev/null
++++ b/src/api/invoice-export.ts
+@@ -0,0 +1,10 @@
++import { ExportClient } from "./export-client";
++import type { Invoice } from "./invoices-client";
++
++const client = new ExportClient();
++
++export async function exportInvoicesCsv(): Promise<string> {
++  const invoices = await client.getRows<Invoice[]>("/invoices");
++  const rows = invoices.map((invoice) => `${invoice.id},${invoice.userId},${invoice.totalCents}`);
++  return ["id,userId,totalCents", ...rows].join("\n");
++}
