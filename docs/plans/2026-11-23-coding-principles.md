@@ -136,7 +136,7 @@
 - [ ] **Step 3: Write the manifests**
 
   `plugin.json`: name `coding-principles`, version `0.1.0`, description "Repo-specific coding principles for superpowers: a guide built from your own code, applied in every spec", author name `Alex Kalyvitis`, license `MIT`, repository `https://github.com/alexkappa/agent-skills`.
-  `marketplace.json`: name `agent-skills`, owner name `Alex Kalyvitis`, one plugin entry `coding-principles` with source `./` and the same description and version.
+  `marketplace.json`: name `alexkappa`, owner name `Alex Kalyvitis`, one plugin entry `coding-principles` with source `./` and the same description and version.
 
 - [ ] **Step 4: Write `references/guide-format.md` and `SKILL.md`**
 
@@ -205,7 +205,7 @@
   Run D2, D4 and D6 once, each in a fresh copy. D2 gives the answers in its first prompt and asks for the spec without further questions, so it takes one or two turns. D1, D3 and D5 are written down but run by hand later: D1 needs Claude Code >= 2.1.277, and D3 and D5 test superpowers' own planning, which costs a full plan run.
   Expected: D2 and D4 pass, and D6 is recorded. If a check fails, close the gap in `SKILL.md` and re-run that check, at most twice.
 
-- [ ] **Step 5: Update `README.md`**: what the plugin does (two lines); install (`/plugin marketplace add alexkappa/agent-skills`, then `/plugin install coding-principles@agent-skills`); enabling it in a repo's committed `.claude/settings.json`; usage (run setup once per repo, then brainstorm as usual); requirements (superpowers 7.0.2 tested, Claude Code ≥ 2.1.277); and how to run `tests/` and `tests/procedures/`.
+- [ ] **Step 5: Update `README.md`**: what the plugin does (two lines); install (`/plugin marketplace add alexkappa/agent-skills`, then `/plugin install coding-principles@alexkappa`); enabling it in a repo's committed `.claude/settings.json`; usage (run setup once per repo, then brainstorm as usual); requirements (superpowers 7.0.2 tested, Claude Code ≥ 2.1.277); and how to run `tests/` and `tests/procedures/`.
 
   Run: `claude plugin validate . && bash tests/harness.test.sh && bash tests/catalog.test.sh`
   Expected: all pass

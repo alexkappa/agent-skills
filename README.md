@@ -7,7 +7,7 @@ When you design a feature with [superpowers](https://github.com/obra/superpowers
 
 ```
 /plugin marketplace add alexkappa/agent-skills
-/plugin install coding-principles@agent-skills
+/plugin install coding-principles@alexkappa
 ```
 
 To make it available to everyone working in a repo, add this to the repo's committed `.claude/settings.json`:
@@ -15,12 +15,12 @@ To make it available to everyone working in a repo, add this to the repo's commi
 ```json
 {
   "extraKnownMarketplaces": {
-    "agent-skills": {
+    "alexkappa": {
       "source": { "source": "github", "repo": "alexkappa/agent-skills" }
     }
   },
   "enabledPlugins": {
-    "coding-principles@agent-skills": true
+    "coding-principles@alexkappa": true
   }
 }
 ```
